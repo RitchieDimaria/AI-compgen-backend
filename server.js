@@ -14,17 +14,6 @@ app.use(express.json());
 const API_KEY = process.env.API_KEY;
 
 // Middleware to check for API key
-const authenticateApiKey = (req, res, next) => {
-  const apiKey = req.headers['x-api-key'];
-  
-  if (!apiKey || apiKey !== API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
-  }
-  
-  next();
-};
-
-app.use(authenticateApiKey);
 
 const CLAUDE_API_ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
