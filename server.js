@@ -17,6 +17,10 @@ const API_KEY = process.env.API_KEY;
 
 const CLAUDE_API_ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
+app.get('/ping', (req, res) => {
+  res.status(200).json({ message: 'Server is running' });
+});
+
 app.post('/generate-component', upload.single('image'), async (req, res) => {
   try {
     const { designDetails, interactivity, stateManagement, libraries } = req.body;
