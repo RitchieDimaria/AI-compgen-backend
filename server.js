@@ -37,7 +37,7 @@ app.post('/generate-component', upload.single('image'), async (req, res) => {
       Preferred Libraries: ${libraries}
       
       Please create a complete, functional React component that matches the provided image and specifications.
-      Include any necessary imports and ensure the component is well-structured and follows best practices.
+      Include any necessary imports and ensure the component is well-structured and follows best practices including comments and styling.
       ONLY RETURN THE COMPONENT CODE, NO OTHER TEXT.
     `;
 
