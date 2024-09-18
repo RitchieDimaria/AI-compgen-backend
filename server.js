@@ -90,15 +90,19 @@ app.post('/generate-component', upload.single('image'), async (req, res) => {
     );
 
     const generatedComponent = response.data.content[0].text;
-
-    const historyId = await insertComponentHistory(
-      designDetails,
-      interactivity,
-      stateManagement,
-      libraries,
-      generatedComponent
-    );
-    // TODO: return historyId
+    try {
+      const historyId = await insertComponentHistory(
+        designDetails,
+        interactivity,
+        stateManagement,
+        libraries,
+        generatedComponent
+      );
+      // TODO: return historyId
+    } catch (error) {
+      console.error('Error inserting component history:', error);
+      // TODO: handle this error appropriately
+    }
     res.json({ component: generatedComponent });
   } catch (error) {
     console.error(error);
