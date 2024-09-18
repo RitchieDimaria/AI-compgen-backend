@@ -101,7 +101,7 @@ app.post('/generate-component', upload.single('image'), async (req, res) => {
     // TODO: return historyId
     res.json({ component: generatedComponent });
   } catch (error) {
-    console.error('Full error response:', JSON.stringify(error.response.data, null, 2));
+    console.error(error);
     res.status(500).json({ error: 'An error occurred while generating the component' });
   }
 });
