@@ -4,18 +4,41 @@ const multer = require('multer');
 const axios = require('axios');
 require('dotenv').config();
 
+
 const app = express();
 const upload = multer();
+
+const API_KEY = process.env.API_KEY;
+const CLAUDE_API_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 app.use(cors());
 app.use(express.json());
 
 
-const API_KEY = process.env.API_KEY;
-
-// Middleware to check for API key
-
-const CLAUDE_API_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+async function insertComponentHistory(designDetails, interactivity, stateManagement, libraries, generatedComponent) {
+  const client = await pool.connect();
+  try {
+    const query = `
+      INSERT INTO component_history (design_details, interactivity, state_management, libraries, generated_component)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id;
+    `;
+    const values = [designDetails, interactivity, stateManagement, libraries, generatedComponent];
+    const result = await client.query(query, values);
+    console.log(`Inserted component history with ID: ${result.rows[0].id}`);
+    return result.rows[0].id;
+  } finally {
+    client.release();
+  }
+}
 
 app.get('/ping', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
@@ -66,6 +89,15 @@ app.post('/generate-component', upload.single('image'), async (req, res) => {
     );
 
     const generatedComponent = response.data.content[0].text;
+
+    const historyId = await insertComponentHistory(
+      designDetails,
+      interactivity,
+      stateManagement,
+      libraries,
+      generatedComponent
+    );
+    // TODO: return historyId
     res.json({ component: generatedComponent });
   } catch (error) {
     console.error('Full error response:', JSON.stringify(error.response.data, null, 2));
