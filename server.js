@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const axios = require('axios');
+const { Pool } = require('pg');
 require('dotenv').config();
 
 
